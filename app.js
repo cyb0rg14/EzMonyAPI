@@ -15,9 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 app.use("/api/v1/auth", authRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Hello World');  
-})
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
+
 const startServer = async () => {
   try {
     await connectDB();

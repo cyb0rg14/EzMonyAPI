@@ -11,9 +11,6 @@ const compileEmailContent = function(otp) {
   return compiledHTML;
 };
 
-module.exports = compileEmailContent;
-
-
 const sendmail = (senderMail, senderPassword, receiverMail, otp) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
