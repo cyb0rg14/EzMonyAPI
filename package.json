@@ -3,8 +3,8 @@
   "module": "index.js",
   "type": "commonjs",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "devDependencies": {
     "bun-types": "latest"
