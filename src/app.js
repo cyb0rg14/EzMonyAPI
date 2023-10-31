@@ -3,6 +3,8 @@ const connectDB = require("./config/db.js");
 const authRoutes = require("./routes/authRoutes.js");
 const cors = require("cors");
 const middlewares = require("./middleware");
+const morgan = require("morgan"); 
+const helmet = require("helmet");
 require("dotenv").config();
 
 const app = express();
@@ -10,6 +12,8 @@ const PORT = process.env.PORT;
 
 // middlewares
 app.use(cors());
+app.use(morgan("dev"));
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(middlewares.notFound);
