@@ -1,4 +1,6 @@
-import mongoose from "mongoose"
+// import mongoose from "mongoose"
+const mongoose = require('mongoose')
+
 
 const UserSchema = new mongoose.Schema({
     profilePicture: {
@@ -42,4 +44,5 @@ const UserSchema = new mongoose.Schema({
 
 })
 
-export default mongoose.model('User', UserSchema)
+// export default mongoose.model('User', UserSchema)
+module.exports = mongoose.model('User', UserSchema)

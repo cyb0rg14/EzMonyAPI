@@ -1,9 +1,8 @@
-import express from "express";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import cors from "cors";
-import dotenv from "dotenv";
-dotenv.config();
+const express = require("express");
+const connectDB = require("./config/db.js");
+const authRoutes = require("./routes/authRoutes.js");
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
 const PORT = process.env.PORT;
@@ -31,3 +30,4 @@ const startServer = async () => {
 };
 
 startServer();
+module.exports = app;

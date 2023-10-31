@@ -1,14 +1,15 @@
-import { generateOTP, validateOTP } from "./otpController.js";
-import { sendmail } from "../utils/sendmail.js";
-import Waitlist from "../models/Waitlist.js"
-import User from "../models/User.js";
-import OTP from "../models/OTP.js";
-import dotenv from "dotenv";
-dotenv.config();
+const { generateOTP, validateOTP } = require("./otpController.js");
+const sendmail = require("../utils/sendmail.js");
+const Waitlist = require("../models/Waitlist.js");
+const User = require("../models/User.js");
+const OTP = require("../models/OTP.js");
+require("dotenv").config();
+
 
 const { AUTH_EMAIL, AUTH_PASS } = process.env;
 
-export const getOTP = async (req, res) => {
+
+const getOTP = async (req, res) => {
   const { email } = req.body;
   const expirationTime = new Date();
   expirationTime.setMinutes(expirationTime.getMinutes() + 5);
@@ -31,7 +32,7 @@ export const getOTP = async (req, res) => {
   }
 };
 
-export const signup = async (req, res) => {
+const signup = async (req, res) => {
   const { fullname, email, otp } = req.body;
   try {
     const existedUser = await User.findOne({ email });
@@ -54,7 +55,7 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+const login = async (req, res) => {
   const { email, otp } = req.body;
   try {
     const existedUser = await User.findOne({ email });
@@ -73,7 +74,7 @@ export const login = async (req, res) => {
   }
 };
 
-export const joinWaitlist = async (req, res) => {
+const joinWaitlist = async (req, res) => {
   const email = req.body.email;
   const existingEmail = await Waitlist.findOne({ email: email });
   try {
@@ -88,4 +89,11 @@ export const joinWaitlist = async (req, res) => {
   } catch (error) {
     console.log("Error occured while adding email to waitlist", error);
   }
+}
+
+module.exports = {
+  getOTP,
+  signup,
+  login,
+  joinWaitlist,
 }

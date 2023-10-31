@@ -1,5 +1,7 @@
-import express from "express";
-import { joinWaitlist, signup, login, getOTP } from "../controllers/authController.js";
+ // import express from "express";
+const express = require('express')
+// import { joinWaitlist, signup, login, getOTP } from "../controllers/authController.js";
+const { joinWaitlist, signup, login, getOTP } = require("../controllers/authController.js");
 
 const router = express.Router();
 
@@ -8,4 +10,5 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post('/get-otp', getOTP)
 
-export default router;
+// export default router;
+module.exports = router
