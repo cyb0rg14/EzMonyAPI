@@ -23,7 +23,7 @@ const sendmail = (senderMail, senderPassword, receiverMail, otp) => {
   const mailOptions = {
     from: senderMail,
     to: receiverMail,
-    subject: "Hirez Verification Code",
+    subject: "EzMony Verification Code",
     html: compileEmailContent(otp),
   };
 
