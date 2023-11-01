@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.send("Welcome to EzMony API!");
+  res.send("<h1>Welcome to EzMony API!</h1>");
 });
 
 // routes
