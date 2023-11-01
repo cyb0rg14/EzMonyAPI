@@ -1,6 +1,5 @@
 import { generateOTP, validateOTP } from "./otpController.js";
 import sendmail from "../utils/sendmail.js";
-import Waitlist from "../models/Waitlist.js";
 import User from "../models/User.js";
 import OTP from "../models/OTP.js";
 import "dotenv/config";
@@ -24,7 +23,7 @@ export const getOTP = async (req, res) => {
       const newOTP = new OTP({ email, otp });
       await newOTP.save();
     }
-    sendmail(AUTH_EMAIL, AUTH_PASS, email, otp);
+    await sendmail(AUTH_EMAIL, AUTH_PASS, email, otp);
     res.status(200).send(`OTP successfully sent to ${email}`);
   } catch (error) {
     res.status(500).send(error.message);
