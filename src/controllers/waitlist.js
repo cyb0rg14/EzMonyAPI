@@ -1,3 +1,5 @@
+import Waitlist from "../models/Waitlist.js";
+
 // Adds an email to the waitlist if it doesn't already exist.
 const joinWaitlist = async (req, res) => {
   const email = req.body.email;

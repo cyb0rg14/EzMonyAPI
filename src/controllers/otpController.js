@@ -1,3 +1,4 @@
+// generated a random OTP and send it to the email
 export const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000);
 };
