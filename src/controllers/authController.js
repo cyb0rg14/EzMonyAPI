@@ -7,6 +7,7 @@ import "dotenv/config";
 
 const { AUTH_EMAIL, AUTH_PASS } = process.env;
 
+// Generates and sends an OTP to the provided email.
 export const getOTP = async (req, res) => {
   const { email } = req.body;
   const expirationTime = new Date();
@@ -30,6 +31,7 @@ export const getOTP = async (req, res) => {
   }
 };
 
+// Handles user signup, checking for existing users and validating OTP.
 export const signup = async (req, res) => {
   const { fullname, email, otp } = req.body;
   try {
@@ -53,6 +55,7 @@ export const signup = async (req, res) => {
   }
 };
 
+// Handles user login, checking for user existence and validating OTP.
 export const login = async (req, res) => {
   const { email, otp } = req.body;
   try {
@@ -72,6 +75,7 @@ export const login = async (req, res) => {
   }
 };
 
+// Adds an email to the waitlist if it doesn't already exist.
 export const joinWaitlist = async (req, res) => {
   const email = req.body.email;
   const existingEmail = await Waitlist.findOne({ email: email });
@@ -85,6 +89,6 @@ export const joinWaitlist = async (req, res) => {
       res.status(200).json(wlEmail);
     }
   } catch (error) {
-    console.log("Error occured while adding email to waitlist", error);
+    console.log("Error occurred while adding email to waitlist", error);
   }
 };

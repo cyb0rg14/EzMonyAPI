@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Compiles an email content with the given OTP.
 function compileEmailContent(otp) {
   const currentModuleURL = import.meta.url;
   const currentModulePath = fileURLToPath(currentModuleURL);
@@ -12,6 +13,7 @@ function compileEmailContent(otp) {
   return compiledHTML;
 }
 
+// Sends an email using nodemailer with sender, receiver, and OTP.
 const sendmail = (senderMail, senderPassword, receiverMail, otp) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
