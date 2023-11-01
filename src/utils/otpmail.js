@@ -1,5 +1,5 @@
-const otpmail = (otp) => {   
-    return `<!DOCTYPE html>
+function otpmail(otp) {
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -59,4 +59,4 @@ const otpmail = (otp) => {
 </html>`;
 }
 
-export default otpmail
+export default otpmail;
