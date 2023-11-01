@@ -1,10 +1,6 @@
 import express from "express";
-import {
-  joinWaitlist,
-  signup,
-  login,
-  getOTP,
-} from "../controllers/authController.js";
+import { signup, login, getOTP } from "../controllers/authController.js";
+import joinWaitlist from "../controllers/waitlist.js";
 
 const router = express.Router();
 
