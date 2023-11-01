@@ -23,7 +23,7 @@ export const getOTP = async (req, res) => {
       const newOTP = new OTP({ email, otp });
       await newOTP.save();
     }
-    await sendmail(AUTH_EMAIL, AUTH_PASS, email, otp);
+    sendmail(AUTH_EMAIL, AUTH_PASS, email, otp);
     res.status(200).send(`OTP successfully sent to ${email}`);
   } catch (error) {
     res.status(500).send(error.message);
