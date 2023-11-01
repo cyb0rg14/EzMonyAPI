@@ -1,22 +1,17 @@
-const express = require("express");
-const connectDB = require("./config/db.js");
-const authRoutes = require("./routes/authRoutes.js");
-const cors = require("cors");
-const middlewares = require("./middleware");
-const morgan = require("morgan"); 
-const helmet = require("helmet");
-require("dotenv").config();
+import express from "express";
+import connectDB from "./config/db.js";
+import authRoutes from "./routes/authRoutes.js";
+import cors from "cors";
+import { notFound, errorHandler } from "./middleware.js";
+import "dotenv/config";
 
 const app = express();
 const PORT = process.env.PORT;
 
 // middlewares
 app.use(cors());
-app.use(morgan("dev"));
-app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 app.get("/", (req, res) => {
   res.send("Hello World");
@@ -38,7 +33,7 @@ const startServer = async () => {
 
 startServer();
 
-app.use(middlewares.notFound);
-app.use(middlewares.errorHandler);
+app.use(notFound);
+app.use(errorHandler);
 
-module.exports = app;
+export default app;

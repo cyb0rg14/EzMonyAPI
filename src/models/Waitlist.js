@@ -1,5 +1,4 @@
-// import mongoose from "mongoose";
-const mongoose = require('mongoose')
+import mongoose from "mongoose";
 
 
 const WaitlistSchema = new mongoose.Schema({
@@ -11,5 +10,4 @@ const WaitlistSchema = new mongoose.Schema({
     }
 })
 
-// export default mongoose.model("Waitlist", WaitlistSchema)
-module.exports = mongoose.model("Waitlist", WaitlistSchema)
+export default mongoose.model("Waitlist", WaitlistSchema)
