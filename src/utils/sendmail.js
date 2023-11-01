@@ -1,13 +1,13 @@
 import nodemailer from "nodemailer";
 import fs from "fs";
 import path from "path";
+import { dirname } from "path";
 import { fileURLToPath } from "url";
 
 // Compiles an email content with the given OTP.
 function compileEmailContent(otp) {
-  const currentModuleURL = import.meta.url;
-  const currentModulePath = fileURLToPath(currentModuleURL);
-  const htmlFilePath = path.join(currentModulePath, "..", "otpmail.html");
+  const currentModulePath = dirname(fileURLToPath(import.meta.url))
+  const htmlFilePath =  currentModulePath + "/otpmail.html";
   const htmlTemplate = fs.readFileSync(htmlFilePath, "utf8");
   const compiledHTML = htmlTemplate.replace("${otp}", otp);
   return compiledHTML;
