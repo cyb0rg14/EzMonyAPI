@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+const otpmail = (otp) => {   
+    return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -55,5 +56,7 @@
         <p class="expiration-message">Note: This OTP will expire after 5 minutes.</p>
     </div>
 </body>
-</html>
+</html>`;
+}
 
+export default otpmail
