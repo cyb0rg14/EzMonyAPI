@@ -1,75 +1,76 @@
-import { generateOTP, validateOTP } from "./otpController.js";
-import sendmail from "../utils/sendmail.js";
 import User from "../models/User.js";
-import OTP from "../models/OTP.js";
-import "dotenv/config";
+import { successResponse, errorResponse } from "../utils/responses.js";
 
-const { AUTH_EMAIL, AUTH_PASS } = process.env;
-
-// Generates and sends an OTP to the provided email.
-export const getOTP = async (req, res) => {
-  const { email } = req.body;
-  const expirationTime = new Date();
-  expirationTime.setMinutes(expirationTime.getMinutes() + 5);
-  try {
-    const otp = generateOTP();
-    const existingOTP = await OTP.findOne({ email });
-    if (existingOTP) {
-      existingOTP.otp = otp;
-      existingOTP.createdAt = new Date();
-      existingOTP.expiresAt = expirationTime;
-      await existingOTP.save();
-    } else {
-      const newOTP = new OTP({ email, otp });
-      await newOTP.save();
-    }
-    sendmail(AUTH_EMAIL, AUTH_PASS, email, otp);
-    res.status(200).send(`OTP successfully sent to ${email}`);
-  } catch (error) {
-    res.status(500).send(error.message);
-  }
-};
-
-// Handles user signup, checking for existing users and validating OTP.
 export const signup = async (req, res) => {
-  const { fullname, email, otp } = req.body;
   try {
-    const existedUser = await User.findOne({ email });
-    const existedOTP = await OTP.findOne({ email });
-    if (existedUser) {
-      res.status(400).send("User already exists");
+    const { fullname, username, password } = req.body;
+    if (!fullname || !username || !password) {
+      return errorResponse(
+        res,
+        400,
+        "Send all required fields: fullname, username, and password"
+      );
     }
-    if (existedOTP) {
-      if (validateOTP(otp, existedOTP)) {
-        const user = await User.create({ fullname, email });
-        res.status(201).send(user);
-      } else {
-        res.status(400).send("Invalid OTP");
-      }
-    } else {
-      res.status(400).send("Invalid OTP");
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return errorResponse(res, 409, `Username '${username}' is not available`);
     }
+    const user = await User.create({ fullname, username, password });
+    successResponse(res, 201, `User '${user.username}' signed up successfully.`)
+    res.json(user);
   } catch (error) {
-    res.status(500).send(error.message);
+     errorResponse(res, 500, "Error while signing up");
   }
 };
 
-// Handles user login, checking for user existence and validating OTP.
 export const login = async (req, res) => {
-  const { email, otp } = req.body;
   try {
-    const existedUser = await User.findOne({ email });
-    const existedOTP = await OTP.findOne({ email });
-    if (!existedUser) {
-      res.status(400).send("No user associated with this email");
+    const { username, password } = req.body;
+    if (!username || !password) {
+      return errorResponse(
+        res,
+        400,
+        "Send all required fields: Username, and Password"
+      );
+    }
+    const existingUser = await User.findOne({ username });
+    if (!existingUser) {
+      return errorResponse(res, 404, `User '${username}' not found!`);
+    }
+    const passwordMatch = await existingUser.comparePassword(password);
+    if (!passwordMatch) {
+      return errorResponse(res, 401, "Incorrect Password!");
+    }
+    if (existingUser) {
+      req.session.userID = existingUser._id;
+      req.session.authorized = true;
+    }
+    return successResponse(
+      res,
+      200,
+      `User '${existingUser.username}' logged in successfully`
+    );
+  } catch (error) {
+    errorResponse(res, 500, "Error while logging in");
+  }
+};
+
+
+export const logout =  async (req, res) => {
+  try {
+    const { userID } = req.session;
+    if (userID) {
+      const user = await User.findById(userID);
+      req.session.destroy();
+      return successResponse(
+        res,
+        200,
+        `User '${user.username}' logged out successfully`
+      );
     } else {
-      if (validateOTP(otp, existedOTP)) {
-        res.status(200).send(existedUser);
-      } else {
-        res.status(400).send("Invalid OTP");
-      }
+      return errorResponse(res, 401, `You are not logged in.`);
     }
   } catch (error) {
-    res.status(500).send(error.message);
+    errorResponse(res, 500, "Error while logging out");
   }
 };
