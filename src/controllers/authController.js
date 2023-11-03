@@ -17,9 +17,9 @@ export const signup = async (req, res) => {
     }
     const user = await User.create({ fullname, username, password });
     successResponse(res, 201, `User '${user.username}' signed up successfully.`)
-    res.json(user);
   } catch (error) {
-     errorResponse(res, 500, "Error while signing up");
+    //  errorResponse(res, 500, "Error while signing up");
+    errorResponse(res, 500, error.message)
   }
 };
 
