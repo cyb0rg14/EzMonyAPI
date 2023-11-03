@@ -18,7 +18,8 @@ app.get("/", (req, res) => {
 });
 
 // routes
-app.use("/api/v1/auth", authRoutes);
+app.use("/v1/auth", authRoutes);
+app.use('/v1/')
 
 const startServer = async () => {
   try {
