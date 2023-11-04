@@ -16,10 +16,14 @@ export const signup = async (req, res) => {
       return errorResponse(res, 409, `Username '${username}' is not available`);
     }
     const user = await User.create({ fullname, username, password });
-    successResponse(res, 201, `User '${user.username}' signed up successfully.`)
+    successResponse(
+      res,
+      201,
+      `User '${user.username}' signed up successfully.`,
+      { securityKey: user.password }
+    );
   } catch (error) {
-    //  errorResponse(res, 500, "Error while signing up");
-    errorResponse(res, 500, error.message)
+    errorResponse(res, 500, "Error while signing up");
   }
 };
 
@@ -58,8 +62,7 @@ export const login = async (req, res) => {
   }
 };
 
-
-export const logout =  async (req, res) => {
+export const logout = async (req, res) => {
   try {
     const { userID } = req.session;
     if (userID) {
