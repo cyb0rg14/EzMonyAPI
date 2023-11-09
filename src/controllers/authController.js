@@ -80,3 +80,31 @@ export const logout = async (req, res) => {
     errorResponse(res, 500, "Error while logging out");
   }
 };
+
+export const checkSecurityKey = async (req, res) => {
+  try {
+    const { username, securityKey } = req.body;
+    if (!username || !securityKey) {
+      return errorResponse(
+        res,
+        400,
+        "Send all required fields: Username and Security Key"
+      );
+    }
+    const existingUser = await User.findOne({ username });
+    if (!existingUser) {
+      return errorResponse(res, 404, `User '${username}' not found!`);
+    }
+    if (existingUser.password !== securityKey) {
+      return errorResponse(res, 401, "Incorrect Security Key!");
+    } else {
+      return successResponse(
+        res,
+        200,
+        `Security Key for user '${existingUser.username}' is correct`
+      );
+    }
+  } catch (error) {
+    errorResponse(res, 500, "Error while checking security key");
+  }
+};

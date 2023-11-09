@@ -16,6 +16,27 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Interests: {
+    type: Array,
+    default: [],
+  },
+  age: {
+    type: Number,
+    default: null,
+  },
+  sex: {
+    type: String,
+    enum: ["Male", "Female", "Other"],
+    default: "Other",
+  },
+  location: {
+    type: String,
+    default: null,
+  },
+  occupation: {
+    type: String,
+    default: null
+  }
 });
 
 UserSchema.pre("save", async function () {
