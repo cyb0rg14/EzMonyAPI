@@ -70,7 +70,7 @@ export const changePassword = async (req, res) => {
     }
     const { oldPassword, newPassword, securityKey } = req.body;
     if (!newPassword) {
-      return errorResponse(res, 400, "Send all required fields: New Password")
+      return errorResponse(res, 400, "Send all required fields: New Password");
     }
     if (!securityKey && oldPassword) {
       const passwordMatch = await user.comparePassword(oldPassword);
@@ -147,13 +147,14 @@ export const deleteProfile = async (req, res) => {
       );
     }
     const deletedUser = await User.findByIdAndDelete(userId);
+    req.session.destroy();
     successResponse(
       res,
       200,
       `User '${deletedUser.username}' deleted successfully`,
       { deletedUser }
-    )
+    );
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
-}
+};
