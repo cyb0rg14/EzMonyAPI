@@ -37,7 +37,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: null
   },
-  UPI: {
+  upiId: {
     type: String,
     defualt: null
   }
