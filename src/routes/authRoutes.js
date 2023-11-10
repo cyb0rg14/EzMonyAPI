@@ -2,8 +2,8 @@ import express from "express";
 import {
   signup,
   login,
-  checkSecurityKey,
   logout,
+  checkSecurityKey,
 } from "../controllers/authController.js";
 
 const router = express.Router();

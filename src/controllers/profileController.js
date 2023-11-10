@@ -47,11 +47,14 @@ export const updateProfileInfo = async (req, res) => {
     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
       new: true,
     });
+    const sanitizedUser = { ...updatedUser._doc };
+    delete sanitizedUser.password;
+    delete sanitizedUser.upiId;
     successResponse(
       res,
       200,
       `User '${updatedUser.username}' profile info updated successfully`,
-      { user: updatedUser }
+      { updatedUser: sanitizedUser }
     );
   } catch (error) {
     errorResponse(res, 500, error.message);
@@ -128,7 +131,7 @@ export const deleteProfile = async (req, res) => {
       return errorResponse(
         res,
         400,
-        "Send all required fields: Old Password or Security Key"
+        "Send all required fields: Password or Security Key"
       );
     } else if (!securityKey && password) {
       const passwordMatch = await user.comparePassword(password);
@@ -143,7 +146,7 @@ export const deleteProfile = async (req, res) => {
       return errorResponse(
         res,
         400,
-        "Only require one field: Old Password or Security Key"
+        "Only require one field: Password or Security Key"
       );
     }
     const deletedUser = await User.findByIdAndDelete(userId);
@@ -152,7 +155,7 @@ export const deleteProfile = async (req, res) => {
       res,
       200,
       `User '${deletedUser.username}' deleted successfully`,
-      { deletedUser }
+      { username: deletedUser.username }
     );
   } catch (error) {
     errorResponse(res, 500, error.message);
