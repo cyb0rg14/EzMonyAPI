@@ -30,7 +30,7 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    if (req.session.userID) {
+    if (req.session.userId) {
       return errorResponse(res, 409, "Already logged in!");
     }
     if (!username || !password) {
@@ -49,7 +49,7 @@ export const login = async (req, res) => {
       return errorResponse(res, 401, "Incorrect Password!");
     }
     if (existingUser) {
-      req.session.userID = existingUser._id;
+      req.session.userId = existingUser._id;
       req.session.authorized = true;
     }
     return successResponse(
@@ -64,9 +64,9 @@ export const login = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    const { userID } = req.session;
-    if (userID) {
-      const user = await User.findById(userID);
+    const { userId } = req.session;
+    if (userId) {
+      const user = await User.findById(userId);
       req.session.destroy();
       return successResponse(
         res,
@@ -74,7 +74,7 @@ export const logout = async (req, res) => {
         `User '${user.username}' logged out successfully`
       );
     } else {
-      return errorResponse(res, 401, `You are not logged in.`);
+      return errorResponse(res, 401, `User not yet logged in`);
     }
   } catch (error) {
     errorResponse(res, 500, "Error while logging out");

@@ -1,10 +1,11 @@
 import express from "express";
 import session from "express-session";
+import cors from "cors";
 import MongoStore from "connect-mongo";
 import connectDB from "./config/db.js";
 import waitlistRoutes from "./routes/waitlistRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
-import cors from "cors";
+import profileRoutes from "./routes/profileRoutes.js";
 import { notFound, errorHandler } from "./middleware.js";
 import "dotenv/config";
 
@@ -27,7 +28,7 @@ app.use(
       maxAge: 30 * 24 * 60 * 60 * 1000,
     },
   })
-)
+);
 
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to EzMony API!</h1>");
@@ -36,6 +37,7 @@ app.get("/", (req, res) => {
 // routes
 app.use("/v1", waitlistRoutes);
 app.use("/v1/auth", authRoutes);
+app.use("/v1/profile/", profileRoutes);
 
 const startServer = async () => {
   try {

@@ -36,6 +36,10 @@ const UserSchema = new mongoose.Schema({
   occupation: {
     type: String,
     default: null
+  },
+  UPI: {
+    type: String,
+    defualt: null
   }
 });
 
