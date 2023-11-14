@@ -1,13 +1,22 @@
+// import starter packages
 import express from "express";
 import session from "express-session";
 import cors from "cors";
 import MongoStore from "connect-mongo";
-import connectDB from "./config/db.js";
+import "dotenv/config";
+
+// import routes
 import waitlistRoutes from "./routes/waitlistRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import surveyRoutes from "./routes/surveyRoutes.js";
+
+// import database connection
+import connectDB from "./config/db.js";
+
+// import middleware
 import { notFound, errorHandler } from "./middleware.js";
-import "dotenv/config";
+
 
 const app = express();
 const PORT = process.env.PORT;
@@ -38,6 +47,7 @@ app.get("/", (req, res) => {
 app.use("/v1", waitlistRoutes);
 app.use("/v1/auth", authRoutes);
 app.use("/v1/profile/", profileRoutes);
+app.use("/v1/surveys", surveyRoutes);
 
 const startServer = async () => {
   try {
