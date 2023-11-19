@@ -56,6 +56,10 @@ export const createSurvey = async (req, res) => {
     } = req.body;
     const creator = req.session.userId;
 
+    if (!creator) {
+      return errorResponse(res, 401, "User not yet logged in!");
+    }
+
     const createdQuestions = [];
 
     for (const questionData of questions) {
@@ -97,9 +101,46 @@ export const createSurvey = async (req, res) => {
 export const updateSurvey = async (req, res) => {
   try {
     const { id } = req.params;
-    const survey = await Survey.findByIdAndUpdate(id, req.body, { new: true });
+    const { questions, ...updatedAttrs } = req.body;
+
+    // Retrieve the existing survey
+    const existingSurvey = await Survey.findById(id).populate("questions");
+    if (!existingSurvey) {
+      return errorResponse(res, 404, "Survey not found");
+    }
+
+    if (existingSurvey.creator.toString() !== req.session.userId) {
+      return errorResponse(
+        res,
+        401,
+        "User not authorized to update this survey"
+      );
+    }
+
+    // Update the questions
+    questions.forEach(async (updatedQuestion) => {
+      const existingQuestion = existingSurvey.questions.find(
+        (q) => q._id.toString() === updatedQuestion._id
+      );
+
+      if (existingQuestion) {
+        existingQuestion.text = updatedQuestion.text;
+        existingQuestion.type = updatedQuestion.type;
+        existingQuestion.options = updatedQuestion.options || [];
+        await existingQuestion.save();
+      }
+    });
+
+    // Save the updated survey
+    Object.keys(updatedAttrs).forEach((attr) => {
+      if (existingSurvey[attr] !== undefined) {
+        existingSurvey[attr] = updatedAttrs[attr];
+      }
+    });
+
+    const updatedSurvey = await existingSurvey.save();
     successResponse(res, 200, "Survey updated successfully", {
-      updatedSurey: survey,
+      updatedSurvey,
     });
   } catch (error) {
     errorResponse(res, 500, error.message);
@@ -109,8 +150,31 @@ export const updateSurvey = async (req, res) => {
 export const deleteSurvey = async (req, res) => {
   try {
     const { id } = req.params;
-    const survey = await Survey.findByIdAndDelete(id);
-    successResponse(res, 204, `Survey ${survey.title} deleted successfully`);
+    const existingSurvey = await Survey.findById(id);
+
+    if (!existingSurvey) {
+      return errorResponse(res, 404, "Survey not found");
+    }
+
+    if (existingSurvey.creator.toString() !== req.session.userId) {
+      return errorResponse(
+        res,
+        403,
+        "User not authorized to delete this survey"
+      );
+    }
+
+    // Delete associated questions
+    await Question.deleteMany({ _id: { $in: existingSurvey.questions } });
+
+    // Delete the survey
+    await existingSurvey.remove();
+
+    successResponse(
+      res,
+      200,
+      `Survey "${existingSurvey.title}" deleted successfully`
+    );
   } catch (error) {
     errorResponse(res, 500, error.message);
   }

@@ -10,9 +10,11 @@ import {
 const router = express.Router();
 
 router.get("/", getAllSurveys);
-router.get("/:id", getSurveyById);
 router.post("/create", createSurvey);
-router.patch("/update/:id", updateSurvey);
-router.delete("/delete/:id", deleteSurvey);
+router
+  .route("/:id")
+  .get(getSurveyById)
+  .patch(updateSurvey)
+  .delete(deleteSurvey);
 
 export default router;
