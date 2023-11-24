@@ -10,13 +10,14 @@ import waitlistRoutes from "./routes/waitlistRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import surveyRoutes from "./routes/surveyRoutes.js";
+import adsRoutes from "./routes/adsRoutes.js";
+import responseRoutes from "./routes/responseRoutes.js";
 
 // import database connection
 import connectDB from "./config/db.js";
 
 // import middleware
 import { notFound, errorHandler } from "./middleware.js";
-
 
 const app = express();
 const PORT = process.env.PORT;
@@ -48,6 +49,8 @@ app.use("/v1", waitlistRoutes);
 app.use("/v1/auth", authRoutes);
 app.use("/v1/profile/", profileRoutes);
 app.use("/v1/surveys", surveyRoutes);
+app.use("/v1/ads", adsRoutes);
+app.use('/v1/response', responseRoutes);
 
 const startServer = async () => {
   try {

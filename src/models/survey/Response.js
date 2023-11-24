@@ -1,22 +1,33 @@
 import mongoose from "mongoose";
 
 const responseSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-  survey: {
+  surveyId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Survey",
+    ref: 'Survey',
+    required: true,
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   answers: [
     {
-      question: {
+      questionId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Question",
+        ref: 'Question',
         required: true,
       },
-      response: { type: String }, // might adjust this based on the question type
+      answer: {
+        type: String,
+        required: true,
+      },
     },
   ],
+  dateSubmitted: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.model("Response", responseSchema);
