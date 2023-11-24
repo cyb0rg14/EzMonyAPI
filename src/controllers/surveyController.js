@@ -31,11 +31,9 @@ export const getSurveyById = async (req, res) => {
         path: "creator",
         select: "fullname username",
       });
-
     if (!survey) {
       return errorResponse(res, 404, "Survey not found");
     }
-
     successResponse(res, 200, "Survey fetched successfully", { survey });
   } catch (error) {
     errorResponse(res, 500, error.message);
@@ -44,6 +42,8 @@ export const getSurveyById = async (req, res) => {
 
 export const createSurvey = async (req, res) => {
   try {
+    const creatorId = req.session.userId;
+    const createdQuestions = [];
     const {
       title,
       description,
@@ -54,24 +54,17 @@ export const createSurvey = async (req, res) => {
       endDate,
       questions,
     } = req.body;
-    const creator = req.session.userId;
-
-    if (!creator) {
-      return errorResponse(res, 401, "User not yet logged in!");
+    if (!creatorId) {
+      return errorResponse(res, 401, "User must be logged in to create a Survey!");
     }
-
-    const createdQuestions = [];
-
     for (const questionData of questions) {
       const question = new Question({
         text: questionData.text,
         type: questionData.type,
         options: questionData.options || [],
       });
-
       createdQuestions.push(question);
     }
-
     const newSurvey = new Survey({
       title,
       description,
@@ -81,14 +74,12 @@ export const createSurvey = async (req, res) => {
       startDate,
       endDate,
       questions: createdQuestions.map((question) => question._id),
-      creator,
+      creator: creatorId,
     });
-
     for (const question of createdQuestions) {
       question.survey = newSurvey._id;
       await question.save();
     }
-
     const savedSurvey = await newSurvey.save();
     successResponse(res, 201, "Survey created successfully", {
       survey: savedSurvey,
@@ -102,6 +93,15 @@ export const updateSurvey = async (req, res) => {
   try {
     const { id } = req.params;
     const { questions, ...updatedAttrs } = req.body;
+
+    const currentUserId = req.session.userId;
+    if (!currentUserId) {
+      return errorResponse(
+        res,
+        401,
+        "User must be logged in to update this survey!"
+      );
+    }
 
     // Retrieve the existing survey
     const existingSurvey = await Survey.findById(id).populate("questions");
@@ -150,12 +150,18 @@ export const updateSurvey = async (req, res) => {
 export const deleteSurvey = async (req, res) => {
   try {
     const { id } = req.params;
+    const currentUserId = req.session.userId;
+    if (!currentUserId) {
+      return errorResponse(
+        res,
+        401,
+        "User must be logged in to delete this survey!"
+      );
+    }
     const existingSurvey = await Survey.findById(id);
-
     if (!existingSurvey) {
       return errorResponse(res, 404, "Survey not found");
     }
-
     if (existingSurvey.creator.toString() !== req.session.userId) {
       return errorResponse(
         res,
@@ -166,9 +172,9 @@ export const deleteSurvey = async (req, res) => {
 
     // Delete associated questions
     await Question.deleteMany({ _id: { $in: existingSurvey.questions } });
-
+    
     // Delete the survey
-    await existingSurvey.remove();
+    await Survey.findByIdAndDelete(id);
 
     successResponse(
       res,

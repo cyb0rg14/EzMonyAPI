@@ -72,7 +72,7 @@ const adSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  creatorId: {
+  creator: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User', 
