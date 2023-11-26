@@ -1,4 +1,4 @@
-import Ad from "../models/Ad.js";
+import Ad from "../models/ad/Ad.js";
 import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllAds = async (req, res) => {
@@ -79,14 +79,23 @@ export const deleteAd = async (req, res) => {
         "User must be logged in to delete this Ad!"
       );
     }
-    const deletedAd = await Ad.findByIdAndDelete(id);
-    if (!deletedAd) {
+    const adToDelete = await Ad.findById(id);
+    if (!adToDelete) {
       return errorResponse(res, 404, "Ad not found");
     }
-    if (deleteAd.creator.toString() !== currentUserId) {
-      return errorResponse(res, 403, "User not authorized to delete this Ad");
+    if (adToDelete.creator.toString() !== currentUserId) {
+      return errorResponse(
+        res,
+        403,
+        "User not authorized to delete this Ad"
+      );
     }
-    successResponse(res, 200, `Ad "${deletedAd.title}" deleted successfully`);
+    const deletedAd = await Ad.findByIdAndDelete(id);
+    successResponse(
+      res,
+      200,
+      `Ad "${deletedAd.title}" deleted successfully`
+    );
   } catch (error) {
     errorResponse(res, 500, error.message);
   }

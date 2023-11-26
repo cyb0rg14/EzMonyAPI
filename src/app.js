@@ -11,6 +11,8 @@ import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import surveyRoutes from "./routes/surveyRoutes.js";
 import adsRoutes from "./routes/adsRoutes.js";
+import ytVideosRoutes from "./routes/ytVideosRoutes.js";
+import instaReelsRoutes from "./routes/instaReelsRoutes.js";
 import responseRoutes from "./routes/responseRoutes.js";
 
 // import database connection
@@ -50,6 +52,8 @@ app.use("/v1/auth", authRoutes);
 app.use("/v1/profile/", profileRoutes);
 app.use("/v1/surveys", surveyRoutes);
 app.use("/v1/ads", adsRoutes);
+app.use('/v1/youtube-videos', ytVideosRoutes);
+app.use("/v1/instagram-reels", instaReelsRoutes);
 app.use('/v1/response', responseRoutes);
 
 const startServer = async () => {

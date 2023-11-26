@@ -1,7 +1,14 @@
 import mongoose from "mongoose"
 
 const adSchema = new mongoose.Schema({
+  files: {
+    type: [String],
+  },
   title: {
+    type: String,
+    required: true,
+  },
+  description: {
     type: String,
     required: true,
   },
@@ -12,22 +19,22 @@ const adSchema = new mongoose.Schema({
   subCategory: {
     type: String,
   },
-  description: {
+  destinationUrl: {
     type: String,
-    required: true,
   },
-  location: {
+  callToAction: {
     type: String,
-    required: true,
   },
-  price: {
-    type: Number,
-  },
-  keywords: {
-    type: [String],
-  },
-  docs: {
-    type: [String], 
+  targetAudience: {
+    age: {
+      type: String,
+    },
+    geolocation: {
+      type: String,
+    },
+    keywords: {
+      type: [String],
+    }
   },
   contactInfo: {
     email: {
@@ -40,37 +47,21 @@ const adSchema = new mongoose.Schema({
       type: String,
     },
   },
-  deliveryOptions: {
-    type: String,
-  },
-  targetAudience: {
-    age: {
-      type: String,
-    },
-  },
-  duration: {
-    type: String,
-  },
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'pending'],
-    default: 'pending',
-  },
-  type: {
-    type: String,
-    enum: ['image', 'video', 'text'],
-    default: 'text',
-  },
-  paymentInfo: {
-    type: String,
-  },
   views: {
     type: Number,
     default: 0,
   },
-  clicks: {
+  currentViews: {
     type: Number,
     default: 0,
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
@@ -80,12 +71,6 @@ const adSchema = new mongoose.Schema({
   datePosted: {
     type: Date,
     default: Date.now,
-  },
-  rating: {
-    type: Number,
-  },
-  feedback: {
-    type: String,
   },
 });
 

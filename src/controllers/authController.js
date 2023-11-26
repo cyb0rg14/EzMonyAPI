@@ -1,4 +1,4 @@
-import User from "../models/User.js";
+import User from "../models/user/User.js";
 import { successResponse, errorResponse } from "../utils/responses.js";
 
 export const signup = async (req, res) => {

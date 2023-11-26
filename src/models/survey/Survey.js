@@ -8,6 +8,8 @@ const surveySchema = new mongoose.Schema({
   reward: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
+  views: { type: Number, default: 0 },
+  currentViews: { type: Number, default: 0 },
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],
   creator: {
     type: mongoose.Schema.Types.ObjectId,
