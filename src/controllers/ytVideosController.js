@@ -1,5 +1,5 @@
 import video from "../models/youtube/Video.js";
-import { errorResponse, successResponse } from "../utils/response.js";
+import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllVideos = async (req, res) => {
   try {
