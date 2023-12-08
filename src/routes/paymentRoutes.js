@@ -1,8 +1,12 @@
 import exress from "express";
-import { makePayment } from "../controllers/paymentController.js";
+import {
+  makePayment,
+  calculatePaymentForSurveys,
+} from "../controllers/paymentController.js";
 
 const router = exress.Router();
 
-router.post("/make-payment", makePayment);
+router.post("/make/payment", makePayment);
+router.post("/calculate/payment", calculatePaymentForSurveys);
 
 export default router;
