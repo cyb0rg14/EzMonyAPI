@@ -47,11 +47,10 @@ export const createSurvey = async (req, res) => {
     const {
       title,
       description,
-      picture,
-      duration,
-      reward,
+      images,
       startDate,
       endDate,
+      responses,
       questions,
     } = req.body;
     if (!creatorId) {
@@ -68,11 +67,10 @@ export const createSurvey = async (req, res) => {
     const newSurvey = new Survey({
       title,
       description,
-      picture,
-      duration,
-      reward,
+      images,
       startDate,
       endDate,
+      responses,
       questions: createdQuestions.map((question) => question._id),
       creator: creatorId,
     });

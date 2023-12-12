@@ -57,19 +57,20 @@ export const updateVideo = async (req, res) => {
         "User must be logged in to update this video!"
       );
     }
-    const updatedVideo = await video.findByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    if (!updatedVideo) {
+    const videoToUpdate = await video.findById(id);
+    if (!videoToUpdate) {
       return errorResponse(res, 404, "Video not found");
     }
-    if (updatedVideo.creator.toString() !== currentUserId) {
+    if (videoToUpdate.creator.toString() !== currentUserId) {
       return errorResponse(
         res,
         403,
         "User not authorized to update this video"
       );
     }
+    const updatedVideo = await video.findByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     successResponse(res, 200, "Video updated successfully", { updatedVideo });
   } catch (error) {
     errorResponse(res, 500, error.message);

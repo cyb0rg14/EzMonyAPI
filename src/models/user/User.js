@@ -40,7 +40,8 @@ const UserSchema = new mongoose.Schema({
   upiId: {
     type: String,
     defualt: null
-  }
+  },
+  skipTutorial: { type: Boolean, default: false },
 });
 
 UserSchema.pre("save", async function () {
