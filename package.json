@@ -3,9 +3,10 @@
   "module": "src/app.js",
   "type": "module",
   "scripts": {
-    "build": "bun install",
+    "build": "npm install",
     "start": "node src/app.js",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon src/app.js",
+    "install": "npm install --legacy-peer-deps"
   },
   "devDependencies": {
     "bun-types": "latest"
