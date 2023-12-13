@@ -1,6 +1,7 @@
 import stripe from "stripe";
+import moment from "moment";
 import { errorResponse, successResponse } from "../utils/responses.js";
-import { dayRangeMultipliers } from "../utils/constants.js";
+import { surveyAttrs, dayRangeMultipliers } from "../utils/constants.js";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeInstance = stripe(stripeSecretKey);
@@ -39,10 +40,12 @@ export const makePayment = async (req, res) => {
 
 export const calculatePaymentForSurveys = async (req, res) => {
   try {
-    const { startDate, endDate, noOfResponses, noOfQuestions } = req.body;
-    const totalDays = Math.round(( endDate - startDate ) / (1000 * 60 * 60 * 24));
-    const basePayment = 5 * noOfResponses;
-    const questionPayment = 100 * noOfQuestions;
+    const { noOfResponses, noOfQuestions } = req.body;
+    const startDate = moment(req.body.startDate);
+    const endDate = moment(req.body.endDate);
+    const totalDays = moment.duration(endDate.diff(startDate)).asDays();
+    const basePayment = surveyAttrs.costPerResponse * noOfResponses;
+    const questionPayment = surveyAttrs.costPerQuestion * noOfQuestions;
     let multiplier = 0;
     for (const range in dayRangeMultipliers) {
       if (totalDays <= parseInt(range, 10)) {
@@ -52,7 +55,7 @@ export const calculatePaymentForSurveys = async (req, res) => {
     }
     const payment = basePayment + (multiplier * basePayment);
     successResponse(res, 200, "Payment calculated successfully", {
-      payout: payment + questionPayment
+      payout: Math.round(payment + questionPayment)
     });
   } catch (error) {
     errorResponse(res, 500, error.message);
