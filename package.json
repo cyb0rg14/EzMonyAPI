@@ -3,7 +3,6 @@
   "module": "index.js",
   "type": "module",
   "scripts": {
-    "build": "bun install"
     "start": "node src/app.js",
     "dev": "nodemon src/app.js"
   },
