@@ -1,6 +1,6 @@
 {
   "name": "ezmony",
-  "module": "index.js",
+  "module": "src/app.js",
   "type": "module",
   "scripts": {
     "start": "node src/app.js",
