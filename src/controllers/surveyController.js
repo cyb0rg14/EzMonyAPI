@@ -183,3 +183,24 @@ export const deleteSurvey = async (req, res) => {
     errorResponse(res, 500, error.message);
   }
 };
+
+export const checkPageVisit = async (req, res) => {
+  const surveyId = req.params.pageId;
+  const userId = req.session.userId;
+  try {
+    const survey = await Survey.findOne({ _id: surveyId});
+    if (!survey) {
+      return errorResponse(res, 404, "Survey not found");
+    }
+    if (!userId) {
+      return errorResponse(res, 401, "User not logged in");
+    }
+    if (!survey.respondersId.includes(userId)) {
+      survey.respondersId.push(userId);
+      await survey.save();
+    }
+    successResponse(res, 200, "Survey visited successfully", { page });
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+}
