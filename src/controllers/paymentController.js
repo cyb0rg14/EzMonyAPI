@@ -43,6 +43,13 @@ export const calculatePaymentForSurveys = async (req, res) => {
     const { noOfResponses, noOfQuestions } = req.body;
     const startDate = moment(req.body.startDate);
     const endDate = moment(req.body.endDate);
+    if (!startDate && !endDate && !noOfResponses && !noOfQuestions) {
+      return errorResponse(
+        res,
+        400,
+        "Send all required fields: startDate, endDate, noOfResponses, noOfQuestions"
+      );
+    }
     const totalDays = moment.duration(endDate.diff(startDate)).asDays();
     const basePayment = surveyAttrs.costPerResponse * noOfResponses;
     const questionPayment = surveyAttrs.costPerQuestion * noOfQuestions;
@@ -53,9 +60,9 @@ export const calculatePaymentForSurveys = async (req, res) => {
         break;
       }
     }
-    const payment = basePayment + (multiplier * basePayment);
+    const payment = basePayment + multiplier * basePayment;
     successResponse(res, 200, "Payment calculated successfully", {
-      payout: Math.round(payment + questionPayment)
+      payout: Math.round(payment + questionPayment),
     });
   } catch (error) {
     errorResponse(res, 500, error.message);
