@@ -27,8 +27,8 @@ export const makePayment = async (req, res) => {
       ],
       payment_method_types: ["card"],
       mode: "payment",
-      success_url: "https://ezmony.in/success",
-      cancel_url: "https://ezmony.in/cancel",
+      success_url: "https://ezmony.in/payment/success",
+      cancel_url: "https://ezmony.in/payment/cancel",
     });
     successResponse(res, 200, "Payment initiated successfully", {
       sessionId: session.url,
@@ -60,9 +60,10 @@ export const calculatePaymentForSurveys = async (req, res) => {
         break;
       }
     }
-    const payment = basePayment + multiplier * basePayment;
+    let payment = basePayment + questionPayment;
+    payment += (payment * multiplier)
     successResponse(res, 200, "Payment calculated successfully", {
-      payout: Math.round(payment + questionPayment),
+      payout: Math.round(payment),
     });
   } catch (error) {
     errorResponse(res, 500, error.message);
