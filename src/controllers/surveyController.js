@@ -54,7 +54,11 @@ export const createSurvey = async (req, res) => {
       questions,
     } = req.body;
     if (!creatorId) {
-      return errorResponse(res, 401, "User must be logged in to create a Survey!");
+      return errorResponse(
+        res,
+        401,
+        "User must be logged in to create a Survey!"
+      );
     }
     for (const questionData of questions) {
       const question = new Question({
@@ -170,7 +174,7 @@ export const deleteSurvey = async (req, res) => {
 
     // Delete associated questions
     await Question.deleteMany({ _id: { $in: existingSurvey.questions } });
-    
+
     // Delete the survey
     await Survey.findByIdAndDelete(id);
 
@@ -184,11 +188,11 @@ export const deleteSurvey = async (req, res) => {
   }
 };
 
-export const checkPageVisit = async (req, res) => {
-  const surveyId = req.params.pageId;
+export const checkAuth = async (req, res) => {
+  const surveyId = req.body.surveyId;
   const userId = req.session.userId;
   try {
-    const survey = await Survey.findOne({ _id: surveyId});
+    const survey = await Survey.findOne({ _id: surveyId });
     if (!survey) {
       return errorResponse(res, 404, "Survey not found");
     }
@@ -196,11 +200,14 @@ export const checkPageVisit = async (req, res) => {
       return errorResponse(res, 401, "User not logged in");
     }
     if (!survey.respondersId.includes(userId)) {
-      survey.respondersId.push(userId);
-      await survey.save();
+      return successResponse(res, 200, "Survey not filled yet", {
+        responded: false,
+      });
     }
-    successResponse(res, 200, "Survey visited successfully", { page });
+    successResponse(res, 200, "Survey has already been filled", {
+      responded: true,
+    });
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
-}
+};
