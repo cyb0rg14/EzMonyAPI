@@ -43,7 +43,7 @@ export const calculatePaymentForSurveys = async (req, res) => {
     const { noOfResponses, noOfQuestions } = req.body;
     const startDate = moment(req.body.startDate);
     const endDate = moment(req.body.endDate);
-    if (!startDate && !endDate && !noOfResponses && !noOfQuestions) {
+    if (!startDate || !endDate || !noOfResponses || !noOfQuestions) {
       return errorResponse(
         res,
         400,
