@@ -100,3 +100,7 @@ export const deleteAd = async (req, res) => {
     errorResponse(res, 500, error.message);
   }
 };
+
+export const checkVisitedUser = async (req, res) => {
+  
+}

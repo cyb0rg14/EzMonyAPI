@@ -55,6 +55,10 @@ const adSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  viewersId: {
+    type: [mongoose.Schema.Types.ObjectId],
+    default: [],
+  },
   startDate: {
     type: Date,
     required: true,
