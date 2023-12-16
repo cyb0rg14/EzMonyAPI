@@ -2,6 +2,7 @@ import stripe from "stripe";
 import moment from "moment";
 import { errorResponse, successResponse } from "../utils/responses.js";
 import { surveyAttrs, dayRangeMultipliers } from "../utils/constants.js";
+import { missingFieldsErrorMsg } from "../utils/helperfunctions.js";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeInstance = stripe(stripeSecretKey);
@@ -43,14 +44,18 @@ export const calculatePaymentForSurveys = async (req, res) => {
     const { noOfResponses, noOfQuestions } = req.body;
     const startDate = moment(req.body.startDate);
     const endDate = moment(req.body.endDate);
-    if (!startDate || !endDate || !noOfResponses || !noOfQuestions) {
+    if (!startDate || !endDate || !noOfQuestions) {
       return errorResponse(
         res,
         400,
-        "Send all required fields: startDate, endDate, noOfResponses, noOfQuestions"
+        missingFieldsErrorMsg({
+          startDate: req.body.startDate,
+          endDate: req.body.endDate,
+          noOfQuestions,
+        })
       );
     }
-    if (noOfResponses === 0) {
+    if (!noOfResponses || !noOfResponses === 0) {
       return successResponse(res, 200, "Payment calculated successfully", {
         payout: 0,
       });
