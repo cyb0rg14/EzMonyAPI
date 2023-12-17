@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllReels);
+router.get("/all", getAllReels);
 router.post("/create", createReel);
 router.route("/:id").get(getReelById).patch(updateReel).delete(deleteReel);
 

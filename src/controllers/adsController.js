@@ -84,23 +84,54 @@ export const deleteAd = async (req, res) => {
       return errorResponse(res, 404, "Ad not found");
     }
     if (adToDelete.creator.toString() !== currentUserId) {
-      return errorResponse(
-        res,
-        403,
-        "User not authorized to delete this Ad"
-      );
+      return errorResponse(res, 403, "User not authorized to delete this Ad");
     }
     const deletedAd = await Ad.findByIdAndDelete(id);
-    successResponse(
-      res,
-      200,
-      `Ad "${deletedAd.title}" deleted successfully`
-    );
+    successResponse(res, 200, `Ad "${deletedAd.title}" deleted successfully`);
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
 };
 
-export const checkVisitedUser = async (req, res) => {
-  
+export const checkAuth = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.session.userId;
+    const ad = await Ad.findById(id);
+    if (!currentUserId) {
+      return errorResponse(res, 401, "User must be logged in!");
+    }
+    if (!ad) {
+      return errorResponse(res, 404, "Ad not found");
+    }
+    if (ad.viewersId.includes(currentUserId)) {
+      return successResponse(res, 200, "User already watched this Ad", {
+        watched: true,
+      });
+    }
+    successResponse(res, 200, "User has not watched this Ad yet", {
+      watched: false,
+    });
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+};
+
+export const addViewer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.session.userId;
+    const ad = await Ad.findById(id);
+    if (!currentUserId) {
+      return errorResponse(res, 401, "User must be logged in!");
+    }
+    if (!ad) {
+      return errorResponse(res, 404, "Ad not found");
+    }
+    ad.viewersId.push(currentUserId);
+    await ad.save();
+    successResponse(res, 200, "User added to Ad viewers successfully");
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
 }

@@ -1,7 +1,11 @@
 import stripe from "stripe";
 import moment from "moment";
 import { errorResponse, successResponse } from "../utils/responses.js";
-import { surveyAttrs, dayRangeMultipliers } from "../utils/constants.js";
+import {
+  surveyAttrs,
+  adAttrs,
+  dayRangeMultipliers,
+} from "../utils/constants.js";
 import { missingFieldsErrorMsg } from "../utils/helperfunctions.js";
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
@@ -75,6 +79,50 @@ export const calculatePaymentForSurveys = async (req, res) => {
     successResponse(res, 200, "Payment calculated successfully", {
       payout: Math.round(payment),
     });
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+};
+
+export const calculatePaymentForAds = async (req, res) => {
+  try {
+    const { noOfResponses, targetPersonalizedAudience } = req.body;
+    const startDate = moment(req.body.startDate);
+    const endDate = moment(req.body.endDate);
+    if (!req.body.startDate || !req.body.endDate) {
+      return errorResponse(
+        res,
+        400,
+        missingFieldsErrorMsg({
+          startDate: req.body.startDate,
+          endDate: req.body.endDate,
+        })
+      );
+    }
+    if (!noOfResponses || !noOfResponses === 0) {
+      return successResponse(res, 200, "Payment calculated successfully", {
+        payout: 0,
+      });
+    }
+    const totalDays = moment.duration(endDate.diff(startDate)).asDays();
+    const basePayment = adAttrs.costPerView * noOfResponses;
+    let payout = basePayment;
+    if (targetPersonalizedAudience === true) {
+      payout += (basePayment * 0.5)
+    }
+    let multiplier = 0
+    for (const range in dayRangeMultipliers) {
+      if (totalDays <= parseInt(range, 10)) {
+        multiplier = dayRangeMultipliers[range];
+        break;
+      }
+    }
+    payout += (payout * multiplier);
+    successResponse(res, 200, "Payment calculated successfully", {
+      payout: Math.round(payout),
+      startDate,
+      endDate
+    })
   } catch (error) {
     errorResponse(res, 500, error.message);
   }

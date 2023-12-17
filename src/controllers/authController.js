@@ -1,4 +1,5 @@
 import User from "../models/user/User.js";
+import { missingFieldsErrorMsg } from "../utils/helperfunctions.js";
 import { successResponse, errorResponse } from "../utils/responses.js";
 
 export const signup = async (req, res) => {
@@ -8,7 +9,7 @@ export const signup = async (req, res) => {
       return errorResponse(
         res,
         400,
-        "Send all required fields: fullname, username, and password"
+        missingFieldsErrorMsg({ fullname, username, password })
       );
     }
     const existingUser = await User.findOne({ username });
@@ -23,7 +24,7 @@ export const signup = async (req, res) => {
       { securityKey: user.password }
     );
   } catch (error) {
-    errorResponse(res, 500, "Error while signing up");
+    errorResponse(res, 500, error.message);
   }
 };
 
@@ -37,7 +38,7 @@ export const login = async (req, res) => {
       return errorResponse(
         res,
         400,
-        "Send all required fields: Username, and Password"
+        missingFieldsErrorMsg({ username, password })
       );
     }
     const existingUser = await User.findOne({ username });
@@ -58,7 +59,7 @@ export const login = async (req, res) => {
       `User '${existingUser.username}' logged in successfully`
     );
   } catch (error) {
-    errorResponse(res, 500, "Error while logging in");
+    errorResponse(res, 500, error.message);
   }
 };
 
@@ -77,7 +78,7 @@ export const logout = async (req, res) => {
       return errorResponse(res, 401, `User not yet logged in`);
     }
   } catch (error) {
-    errorResponse(res, 500, "Error while logging out");
+    errorResponse(res, 500, error.message);
   }
 };
 
@@ -88,7 +89,7 @@ export const checkSecurityKey = async (req, res) => {
       return errorResponse(
         res,
         400,
-        "Send all required fields: Username and Security Key"
+        missingFieldsErrorMsg({ username, securityKey })
       );
     }
     const existingUser = await User.findOne({ username });
@@ -105,6 +106,6 @@ export const checkSecurityKey = async (req, res) => {
       );
     }
   } catch (error) {
-    errorResponse(res, 500, "Error while checking security key");
+    errorResponse(res, 500, error.message);
   }
 };

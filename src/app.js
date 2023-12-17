@@ -13,7 +13,6 @@ import surveyRoutes from "./routes/surveyRoutes.js";
 import adsRoutes from "./routes/adsRoutes.js";
 import ytVideosRoutes from "./routes/ytVideosRoutes.js";
 import instaReelsRoutes from "./routes/instaReelsRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
 
 // import database connection
 import connectDB from "./config/db.js";
@@ -49,12 +48,11 @@ app.get("/", (req, res) => {
 // routes
 app.use("/v1", waitlistRoutes);
 app.use("/v1/auth", authRoutes);
-app.use("/v1/profile/", profileRoutes);
-app.use("/v1/survey", surveyRoutes);
+app.use("/v1/profile", profileRoutes);
+app.use("/v1/surveys", surveyRoutes);
 app.use("/v1/ads", adsRoutes);
 app.use('/v1/youtube-videos', ytVideosRoutes);
 app.use("/v1/instagram-reels", instaReelsRoutes);
-app.use('/v1/', paymentRoutes);
 
 const startServer = async () => {
   try {

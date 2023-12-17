@@ -9,7 +9,7 @@ import {
 
 const router = express.Router();
 
-router.get("/", getAllVideos);
+router.get("/all", getAllVideos);
 router.post("/create", createVideo);
 router.route("/:id").get(getVideoById).patch(updateVideo).delete(deleteVideo);
 

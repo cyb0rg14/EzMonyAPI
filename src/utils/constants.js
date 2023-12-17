@@ -3,6 +3,10 @@ const surveyAttrs = {
   costPerQuestion: 100,
 };
 
+const adAttrs = {
+  costPerView: 3,
+}
+
 const dayRangeMultipliers = {
   30: 0.25,
   45: 0.2,
@@ -10,4 +14,4 @@ const dayRangeMultipliers = {
   90: 0.1,
 };
 
-export { surveyAttrs, dayRangeMultipliers };
+export { surveyAttrs, adAttrs, dayRangeMultipliers };
