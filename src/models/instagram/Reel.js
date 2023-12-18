@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 const reelSchema = new mongoose.Schema({
   url: { type: String, required: true },
   title: { type: String, required: true },
-  description: { type: String, required: true },
   category: { type: String, required: true },
   subCategory: { type: String, required: true },
   startDate: { type: Date, required: true },
@@ -17,7 +16,6 @@ const reelSchema = new mongoose.Schema({
   targetAudience: {
     age: { type: String, default: null },
     geolocation: { type: String, default: null },
-    preference: { type: String, default: null },
     tags: { type: [String], default: [] },
   },
   creator: {

@@ -100,3 +100,46 @@ export const deleteReel = async (req, res) => {
     errorResponse(res, 500, error.message);
   }
 };
+
+export const addViewer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.session.userId;
+    const reel = await Reel.findById(id);
+    if (!currentUserId) {
+      return errorResponse(res, 401, "User must be logged in!");
+    }
+    if (!reel) {
+      return errorResponse(res, 404, "Reel not found");
+    }
+    reel.viewersId.push(currentUserId);
+    await reel.save();
+    successResponse(res, 200, "User added to Reel viewers successfully");
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+}
+
+export const checkAuth = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.session.userId;
+    const reel = await Reel.findById(id);
+    if (!currentUserId) {
+      return errorResponse(res, 401, "User must be logged in!");
+    }
+    if (!reel) {
+      return errorResponse(res, 404, "Reel not found");
+    }
+    if (reel.viewersId.includes(currentUserId)) {
+      return successResponse(res, 200, "User already watched this Reel", {
+        watched: true,
+      });
+    }
+    successResponse(res, 200, "User has not watched this Reel yet", {
+      watched: false,
+    });
+  } catch (error) {
+    errorResponse(res, 500, error.message); 
+  }
+}

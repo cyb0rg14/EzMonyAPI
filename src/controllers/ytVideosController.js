@@ -1,4 +1,4 @@
-import video from "../models/youtube/Video.js";
+import Video from "../models/youtube/Video.js";
 import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllVideos = async (req, res) => {
@@ -105,6 +105,49 @@ export const deleteVideo = async (req, res) => {
       200,
       `Video "${deletedVideo.title}" deleted successfully`
     );
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+};
+
+export const addViewer = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.session.userId;
+    const video = await Video.findById(id);
+    if (!currentUserId) {
+      return errorResponse(res, 401, "User must be logged in!");
+    }
+    if (!video) {
+      return errorResponse(res, 404, "Video not found");
+    }
+    video.viewersId.push(currentUserId);
+    await video.save();
+    successResponse(res, 200, "User added to Video viewers successfully");
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+};
+
+export const checkAuth = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.session.userId;
+    const video = await Video.findById(id);
+    if (!currentUserId) {
+      return errorResponse(res, 401, "User must be logged in!");
+    }
+    if (!video) {
+      return errorResponse(res, 404, "video not found");
+    }
+    if (video.viewersId.includes(currentUserId)) {
+      return successResponse(res, 200, "User already watched this video", {
+        watched: true,
+      });
+    }
+    successResponse(res, 200, "User has not watched this video yet", {
+      watched: false,
+    });
   } catch (error) {
     errorResponse(res, 500, error.message);
   }

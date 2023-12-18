@@ -17,7 +17,6 @@ const videoSchema = new mongoose.Schema({
   targetAudience: {
     age: { type: String, default: null },
     geolocation: { type: String, default: null },
-    preference: { type: String, default: null },
     tags: { type: [String], default: [] },
   },
   creator: {

@@ -7,6 +7,14 @@ const adAttrs = {
   costPerView: 3,
 }
 
+const reelAttrs = {
+  costPerView: 0.5,
+}
+
+const ytVideoAttrs = {
+  costPerView: 3,
+}
+
 const dayRangeMultipliers = {
   30: 0.25,
   45: 0.2,
