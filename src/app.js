@@ -49,10 +49,10 @@ app.get("/", (req, res) => {
 app.use("/v1", waitlistRoutes);
 app.use("/v1/auth", authRoutes);
 app.use("/v1/profile", profileRoutes);
-app.use("/v1/surveys", surveyRoutes);
-app.use("/v1/ads", adsRoutes);
-app.use('/v1/youtube-videos', ytVideosRoutes);
-app.use("/v1/instagram-reels", instaReelsRoutes);
+app.use("/v1/survey", surveyRoutes);
+app.use("/v1/ad", adsRoutes);
+app.use('/v1/youtube-video', ytVideosRoutes);
+app.use("/v1/instagram-reel", instaReelsRoutes);
 
 const startServer = async () => {
   try {
