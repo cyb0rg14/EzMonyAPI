@@ -9,6 +9,7 @@ import "dotenv/config";
 import waitlistRoutes from "./routes/waitlistRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import surveyRoutes from "./routes/surveyRoutes.js";
 import adsRoutes from "./routes/adsRoutes.js";
 import ytVideosRoutes from "./routes/ytVideosRoutes.js";
@@ -49,6 +50,7 @@ app.get("/", (req, res) => {
 app.use("/v1", waitlistRoutes);
 app.use("/v1/auth", authRoutes);
 app.use("/v1/profile", profileRoutes);
+app.use("/v1/user", userRoutes);
 app.use("/v1/survey", surveyRoutes);
 app.use("/v1/ad", adsRoutes);
 app.use('/v1/youtube-video', ytVideosRoutes);

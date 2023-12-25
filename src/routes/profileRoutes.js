@@ -4,7 +4,7 @@ import {
   updateProfileInfo,
   changePassword,
   deleteProfile,
-} from "../controllers/profileController.js";
+} from "../controllers/user/profileController.js";
 
 const router = express.Router();
 

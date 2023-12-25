@@ -1,6 +1,6 @@
-import User from "../models/user/User.js";
+import User from "../../models/user/User.js";
 import bcrypt from "bcryptjs";
-import { successResponse, errorResponse } from "../utils/responses.js";
+import { successResponse, errorResponse } from "../../utils/responses.js";
 
 export const viewProfileInfo = async (req, res) => {
   try {
