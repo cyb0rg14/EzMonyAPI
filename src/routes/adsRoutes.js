@@ -24,3 +24,4 @@ router.post("/calculate-payment", calculatePaymentForAds);
 router.route("/:id").get(getAdById).patch(updateAd).delete(deleteAd);
 
 export default router;
+ 

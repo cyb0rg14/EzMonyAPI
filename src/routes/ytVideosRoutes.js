@@ -1,6 +1,6 @@
 import express from "express";
 import {
-  makepayment,
+  makePayment,
   calculatePaymentForVideos,
 } from "../controllers/paymentController.js";
 import {
@@ -19,7 +19,7 @@ router.get("/all", getAllVideos);
 router.post("/create", createVideo);
 router.post("/add-viewer", addViewer);
 router.post("/check-auth", checkAuth);
-router.post("/make-payment", makepayment);
+router.post("/make-payment", makePayment);
 router.post("/calculate-payment", calculatePaymentForVideos);
 router.route("/:id").get(getVideoById).patch(updateVideo).delete(deleteVideo);
 

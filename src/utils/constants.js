@@ -22,4 +22,4 @@ const dayRangeMultipliers = {
   90: 0.1,
 };
 
-export { surveyAttrs, adAttrs, dayRangeMultipliers };
+export { surveyAttrs, adAttrs, reelAttrs, ytVideoAttrs, dayRangeMultipliers };
