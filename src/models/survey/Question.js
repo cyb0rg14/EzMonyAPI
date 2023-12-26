@@ -4,11 +4,11 @@ const questionSchema = new mongoose.Schema({
   text: { type: String, required: true },
   type: {
     type: String,
-    enum: ["Option Based", "Answer Based"],
+    enum: ["option", "answer"],
     lowercase: true,
     required: true,
   },
-  options: [{ type: String }],
+  options: { type: [String] },
   survey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Survey",

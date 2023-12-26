@@ -50,16 +50,16 @@ export const createSurvey = async (req, res) => {
       images,
       startDate,
       endDate,
-      responses,
+      noOfResponses,
       questions,
     } = req.body;
-    if (!creatorId) {
-      return errorResponse(
-        res,
-        401,
-        "User must be logged in to create a Survey!"
-      );
-    }
+    // if (!creatorId) {
+    //   return errorResponse(
+    //     res,
+    //     401,
+    //     "User must be logged in to create a Survey!"
+    //   );
+    // }
     for (const questionData of questions) {
       const question = new Question({
         text: questionData.text,
@@ -74,7 +74,7 @@ export const createSurvey = async (req, res) => {
       images,
       startDate,
       endDate,
-      responses,
+      noOfResponses,
       questions: createdQuestions.map((question) => question._id),
       creator: creatorId,
     });

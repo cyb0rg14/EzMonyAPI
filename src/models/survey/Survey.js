@@ -6,7 +6,7 @@ const surveySchema = new mongoose.Schema({
   images: { type: [String] },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  responses: { type: Number, required: true },
+  noOfResponses: { type: Number, required: true },
   currentResponses: { type: Number, default: 0 },
   respondersId: { type: [mongoose.Schema.Types.ObjectId], default: [] },
   questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Question" }],

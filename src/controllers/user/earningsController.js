@@ -30,36 +30,36 @@ export const addEarnings = async (req, res) => {
 const resetDailyEarnings = async () => {
   try {
     await User.updateMany({}, { $set: { "earnings.today": 0 } });
-    successResponse(res, 200, "Daily earnings reset successfully");
+    console.log("Daily earnings reset successfully");
   } catch (error) {
-    errorResponse(res, 500, error.message);
+    console.error(error.message);
   }
 };
 
 const resetWeeklyEarnings = async () => {
   try {
     await User.updateMany({}, { $set: { "earnings.weekly": 0 } });
-    successResponse(res, 200, "Weekly earnings reset successfully");
+    console.log("Weekly earnings reset successfully");
   } catch (error) {
-    errorResponse(res, 500, error.message);
+    console.error(error.message);
   }
 };
 
 const resetMonthlyEarnings = async () => {
   try {
     await User.updateMany({}, { $set: { "earnings.monthly": 0 } });
-    successResponse(res, 200, "Monthly earnings reset successfully");
+    console.log("Monthly earnings reset successfully");
   } catch (error) {
-    errorResponse(res, 500, error.message);
+    console.error(error.message);
   }
 };
 
 const resetYearlyEarnings = async () => {
   try {
     await User.updateMany({}, { $set: { "earnings.yearly": 0 } });
-    successResponse(res, 200, "Yearly earnings reset successfully");
+    console.log("Yearly earnings reset successfully");
   } catch (error) {
-    errorResponse(res, 500, error.message);
+    console.error(error.message);
   }
 };
 
@@ -72,6 +72,7 @@ const resetDailyEarningsJob = new cron.CronJob(
   "Asia/Kolkata"
 );
 resetDailyEarningsJob.start();
+
 
 // Schedule the function to run every Monday at midnight IST
 const resetWeeklyEarningsJob = new cron.CronJob(
