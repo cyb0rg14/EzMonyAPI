@@ -4,8 +4,8 @@ const adSchema = new mongoose.Schema({
   files: { type: [String] },
   title: { type: String, required: true },
   description: { type: String, required: true },
-  category: { type: String, required: true },
-  subCategory: { type: String, required: true },
+  categories: { type: [String], required: true },
+  subCategories: { type: [String], required: true },
   destinationUrl: { type: String, required: true },
   callToAction: { type: String, required: true },
   startDate: { type: Date, required: true },
@@ -18,8 +18,8 @@ const adSchema = new mongoose.Schema({
     clickOnUrl: { type: Number, default: 0 },
   },
   targetAudience: {
-    age: { type: String },
-    geolocation: { type: String },
+    ageGroups: { type: [String] },
+    geolocations: { type: [String] },
     tags: { type: [String] },
   },
   contactInfo: {
@@ -29,7 +29,7 @@ const adSchema = new mongoose.Schema({
   },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
+    // required: true,
     ref: "User",
   },
 });

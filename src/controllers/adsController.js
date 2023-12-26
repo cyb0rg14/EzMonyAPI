@@ -32,9 +32,9 @@ export const getAdById = async (req, res) => {
 export const createAd = async (req, res) => {
   try {
     const creatorId = req.session.userId;
-    if (!creatorId) {
-      return errorResponse(res, 401, "User must be logged in to create an Ad!");
-    }
+    // if (!creatorId) {
+    //   return errorResponse(res, 401, "User must be logged in to create an Ad!");
+    // }
     const newAd = await Ad.create({ ...req.body, creator: creatorId });
     successResponse(res, 201, "Ad created successfully", { newAd });
   } catch (error) {
