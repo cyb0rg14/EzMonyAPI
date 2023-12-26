@@ -88,7 +88,7 @@ export const calculatePaymentForSurveys = async (req, res) => {
 
 export const calculatePaymentForAds = async (req, res) => {
   try {
-    const { noOfResponses, targetPersonalizedAudience } = req.body;
+    const { noOfViewers, targetPersonalizedAudience } = req.body;
     const startDate = moment(req.body.startDate);
     const endDate = moment(req.body.endDate);
     if (!req.body.startDate || !req.body.endDate) {
@@ -101,13 +101,13 @@ export const calculatePaymentForAds = async (req, res) => {
         })
       );
     }
-    if (!noOfResponses || !noOfResponses === 0) {
+    if ( !noOfViewers ||  noOfViewers === 0) {
       return successResponse(res, 200, "Payment calculated successfully", {
         payout: 0,
       });
     }
     const totalDays = moment.duration(endDate.diff(startDate)).asDays();
-    const basePayment = adAttrs.costPerView * noOfResponses;
+    const basePayment = adAttrs.costPerView * noOfViewers;
     let payout = basePayment;
     if (targetPersonalizedAudience === true) {
       payout += (basePayment * 0.5)
