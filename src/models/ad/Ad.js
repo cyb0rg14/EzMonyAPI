@@ -10,7 +10,7 @@ const adSchema = new mongoose.Schema({
   callToAction: { type: String, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
-  views: { type: Number, default: 0 },
+  noOfViews: { type: Number, default: 0 },
   viewersId: { type: [mongoose.Schema.Types.ObjectId], default: [] },
   metrics: {
     impressions: { type: Number, default: 0 },

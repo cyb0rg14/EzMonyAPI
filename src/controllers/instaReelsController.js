@@ -32,13 +32,13 @@ export const getReelById = async (req, res) => {
 export const createReel = async (req, res) => {
   try {
     const creatorId = req.session.userId;
-    if (!creatorId) {
-      return errorResponse(
-        res,
-        401,
-        "User must be logged in to create a Reel!"
-      );
-    }
+    // if (!creatorId) {
+    //   return errorResponse(
+    //     res,
+    //     401,
+    //     "User must be logged in to create a Reel!"
+    //   );
+    // }
     const newReel = await Reel.create({ ...req.body, creator: creatorId });
     successResponse(res, 201, "Reel created successfully", { newReel });
   } catch (error) {

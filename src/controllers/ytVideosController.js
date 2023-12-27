@@ -3,7 +3,7 @@ import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllVideos = async (req, res) => {
   try {
-    const videos = await video.find().populate({
+    const videos = await Video.find().populate({
       path: "creator",
       select: "fullname username",
     });
@@ -16,7 +16,7 @@ export const getAllVideos = async (req, res) => {
 export const getVideoById = async (req, res) => {
   try {
     const { id } = req.params;
-    const video = await video.findById(id).populate({
+    const video = await Video.findById(id).populate({
       path: "creator",
       select: "fullname username",
     });
@@ -32,14 +32,14 @@ export const getVideoById = async (req, res) => {
 export const createVideo = async (req, res) => {
   try {
     const creatorId = req.session.userId;
-    if (!creatorId) {
-      return errorResponse(
-        res,
-        401,
-        "User must be logged in to create a Video!"
-      );
-    }
-    const newVideo = await video.create({ ...req.body, creator: creatorId });
+    // if (!creatorId) {
+    //   return errorResponse(
+    //     res,
+    //     401,
+    //     "User must be logged in to create a Video!"
+    //   );
+    // }
+    const newVideo = await Video.create({ ...req.body, creator: creatorId });
     successResponse(res, 201, "Video created successfully", { newVideo });
   } catch (error) {
     errorResponse(res, 500, error.message);
@@ -57,7 +57,7 @@ export const updateVideo = async (req, res) => {
         "User must be logged in to update this video!"
       );
     }
-    const videoToUpdate = await video.findById(id);
+    const videoToUpdate = await Video.findById(id);
     if (!videoToUpdate) {
       return errorResponse(res, 404, "Video not found");
     }
@@ -68,7 +68,7 @@ export const updateVideo = async (req, res) => {
         "User not authorized to update this video"
       );
     }
-    const updatedVideo = await video.findByIdAndUpdate(id, req.body, {
+    const updatedVideo = await Video.findByIdAndUpdate(id, req.body, {
       new: true,
     });
     successResponse(res, 200, "Video updated successfully", { updatedVideo });
@@ -88,7 +88,7 @@ export const deleteVideo = async (req, res) => {
         "User must be logged in to delete this Video!"
       );
     }
-    const videoToDelete = await video.findById(id);
+    const videoToDelete = await Video.findById(id);
     if (!videoToDelete) {
       return errorResponse(res, 404, "Video not found");
     }
@@ -99,7 +99,7 @@ export const deleteVideo = async (req, res) => {
         "User not authorized to delete this Video"
       );
     }
-    const deletedVideo = await video.findByIdAndDelete(id);
+    const deletedVideo = await Video.findByIdAndDelete(id);
     successResponse(
       res,
       200,
