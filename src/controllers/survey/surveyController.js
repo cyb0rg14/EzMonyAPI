@@ -1,10 +1,26 @@
-import Survey from "../models/survey/Survey.js";
-import Question from "../models/survey/Question.js";
-import { errorResponse, successResponse } from "../utils/responses.js";
+import Survey from "../../models/survey/Survey.js";
+import Question from "../../models/survey/Question.js";
+import { errorResponse, successResponse } from "../../utils/responses.js";
 
 export const getAllSurveys = async (req, res) => {
   try {
-    const surveys = await Survey.find()
+    const { pageSize = 4, categories, subCategories } = req.query;
+    const query = {};
+    if (categories) {
+      if (!Array.isArray(categories)) {
+        query.categories = categories;
+      } else if (categories.length > 0) {
+        query.categories = { $all: categories };
+      }
+    }
+    if (subCategories) {
+      if (!Array.isArray(subCategories)) {
+        query.subCategories = subCategories;
+      } else if (subCategories.length > 0) {
+        query.subCategories = { $all: subCategories };
+      }
+    }
+    const surveys = await Survey.find(query)
       .populate({
         path: "questions",
         select: "text type options",
@@ -12,7 +28,10 @@ export const getAllSurveys = async (req, res) => {
       .populate({
         path: "creator",
         select: "fullname username",
-      });
+      })
+      .sort({ _id: -1 })
+      .limit(pageSize);
+
     successResponse(res, 200, "All surveys fetched successfully", { surveys });
   } catch (error) {
     errorResponse(res, 500, error.message);

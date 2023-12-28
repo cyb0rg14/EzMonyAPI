@@ -3,10 +3,48 @@ import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllAds = async (req, res) => {
   try {
-    const ads = await Ad.find().populate({
-      path: "creator",
-      select: "fullname username",
-    });
+    const { pageSize = 4, categories, subCategories } = req.query;
+    const query = {};
+    if (categories) {
+      if (!Array.isArray(categories)) {
+        query.categories = categories;
+      } else if (categories.length > 0) {
+        query.categories = { $all: categories };
+      }
+    }
+    if (subCategories) {
+      if (!Array.isArray(subCategories)) {
+        query.subCategories = subCategories;
+      } else if (subCategories.length > 0) {
+        query.subCategories = { $all: subCategories };
+      }
+    }
+    const ads = await Ad.find(query)
+      .populate({
+        path: "creator",
+        select: "fullname username",
+      })
+      .sort({ _id: -1 })
+      .limit(pageSize);
+
+    successResponse(res, 200, "Ads fetched successfully", { ads });
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+};
+
+export const getAdsByCategories = async (req, res) => {
+  try {
+    const { pageSize = 4, categories } = req.query;
+
+    const ads = await Ad.find({ categories: { $in: categories } })
+      .populate({
+        path: "creator",
+        select: "fullname username",
+      })
+      .sort({ _id: -1 })
+      .limit(pageSize);
+
     successResponse(res, 200, "Ads fetched successfully", { ads });
   } catch (error) {
     errorResponse(res, 500, error.message);
@@ -134,4 +172,4 @@ export const addViewer = async (req, res) => {
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
-}
+};

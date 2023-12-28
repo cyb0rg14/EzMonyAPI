@@ -1,5 +1,5 @@
 import express from "express";
-import { addResponse } from "../controllers/responseController.js";
+import { addResponse } from "../controllers/survey/responseController.js";
 import {
   getAllSurveys,
   getSurveyById,
@@ -7,7 +7,7 @@ import {
   updateSurvey,
   deleteSurvey,
   checkAuth,
-} from "../controllers/surveyController.js";
+} from "../controllers/survey/surveyController.js";
 import {
   makePayment,
   calculatePaymentForSurveys,

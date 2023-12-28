@@ -1,6 +1,6 @@
-import Survey from "../models/survey/Survey.js";
-import Response from "../models/survey/Response.js";
-import { errorResponse, successResponse } from "../utils/responses.js";
+import Survey from "../../models/survey/Survey.js";
+import Response from "../../models/survey/Response.js";
+import { errorResponse, successResponse } from "../../utils/responses.js";
 
 
 const validateAnswers = async (res, surveyId, answers) => {

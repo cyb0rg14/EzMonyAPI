@@ -3,10 +3,31 @@ import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllVideos = async (req, res) => {
   try {
-    const videos = await Video.find().populate({
-      path: "creator",
-      select: "fullname username",
-    });
+    const { pageSize = 4, categories, subCategories } = req.query;
+    const query = {};
+    if (categories) {
+      if (!Array.isArray(categories)) {
+        query.categories = categories;
+      } else if (categories.length > 0) {
+        query.categories = { $all: categories };
+      }
+    }
+    if (subCategories) {
+      if (!Array.isArray(subCategories)) {
+        query.subCategories = subCategories;
+      } else if (subCategories.length > 0) {
+        query.subCategories = { $all: subCategories };
+      }
+    }
+    const videos = await Video.find(query)
+      .populate({
+        path: "creator",
+        select: "fullname username",
+      })
+      .sort({ _id: -1 })
+      .limit(pageSize);
+
+
     successResponse(res, 200, "All videos fetched successfully", { videos });
   } catch (error) {
     errorResponse(res, 500, error.message);
