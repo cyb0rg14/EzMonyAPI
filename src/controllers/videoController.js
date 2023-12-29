@@ -1,4 +1,6 @@
+import User from "../models/user/User.js";
 import Video from "../models/youtube/Video.js";
+import { getMatchingScores } from "../utils/recalgo.js";
 import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllVideos = async (req, res) => {
@@ -33,6 +35,37 @@ export const getAllVideos = async (req, res) => {
     errorResponse(res, 500, error.message);
   }
 };
+
+export const getRecommendedVideos = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return errorResponse(
+        res,
+        401,
+        "User must be logged in to get recommended videos!"
+      );
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return errorResponse(res, 404, "User not found");
+    }
+
+    const videos = await Video.find();
+    const videoMatchingScores = await getMatchingScores(user, ads, "ad");
+    videos.sort((a, b) => {
+      const scoreA =
+        videoMatchingScores.find((item) => item.adId.equals(a._id))?.score || 0;
+      const scoreB =
+        videoMatchingScores.find((item) => item.adId.equals(b._id))?.score || 0;
+      return scoreB - scoreA;
+    });
+
+    successResponse(res, 200, "videos fetched successfully", { ads });
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+}
 
 export const getVideoById = async (req, res) => {
   try {
@@ -144,7 +177,7 @@ export const addViewer = async (req, res) => {
     }
     video.viewersId.push(currentUserId);
     await video.save();
-    successResponse(res, 200, "User added to Video viewers successfully");
+    successResponse(res, 200, "User videoded to Video viewers successfully");
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
@@ -162,7 +195,7 @@ export const checkAuth = async (req, res) => {
       return errorResponse(res, 404, "video not found");
     }
     if (video.viewersId.includes(currentUserId)) {
-      return successResponse(res, 200, "User already watched this video", {
+      return successResponse(res, 200, "User alrevideoy watched this video", {
         watched: true,
       });
     }

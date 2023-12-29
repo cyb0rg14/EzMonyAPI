@@ -5,17 +5,19 @@ import {
 } from "../controllers/paymentController.js";
 import {
   getAllVideos,
+  getRecommendedVideos,
   getVideoById,
   createVideo,
   updateVideo,
   deleteVideo,
   addViewer,
   checkAuth,
-} from "../controllers/ytVideosController.js";
+} from "../controllers/videoController.js";
 
 const router = express.Router();
 
 router.get("/all", getAllVideos);
+router.get("/recommended", getRecommendedVideos);
 router.post("/create", createVideo);
 router.post("/add-viewer", addViewer);
 router.post("/check-auth", checkAuth);

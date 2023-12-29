@@ -1,4 +1,6 @@
+import User from "../models/user/User.js";
 import Reel from "../models/instagram/Reel.js";
+import { getMatchingScores } from "../utils/recalgo.js";
 import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllReels = async (req, res) => {
@@ -32,6 +34,37 @@ export const getAllReels = async (req, res) => {
     errorResponse(res, 500, error.message); 
   }
 };
+
+export const getRecommendedReels = async (req, res) => {
+  try {
+    const userId = req.session.userId;
+    if (!userId) {
+      return errorResponse(
+        res,
+        401,
+        "User must be logged in to get recommended reels!"
+      );
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return errorResponse(res, 404, "User not found");
+    }
+
+    const reels = await Reel.find();
+    const reelMatchingScores = await getMatchingScores(user, reels, "reel");
+    reels.sort((a, b) => {
+      const scoreA =
+        reelMatchingScores.find((item) => item.reelId.equals(a._id))?.score || 0;
+      const scoreB =
+        reelMatchingScores.find((item) => item.reelId.equals(b._id))?.score || 0;
+      return scoreB - scoreA;
+    });
+
+    successResponse(res, 200, "Reels fetched successfully", { reels });
+  } catch (error) {
+    errorResponse(res, 500, error.message);
+  }
+}
 
 export const getReelById = async (req, res) => {
   try {
@@ -134,7 +167,7 @@ export const addViewer = async (req, res) => {
     }
     reel.viewersId.push(currentUserId);
     await reel.save();
-    successResponse(res, 200, "User added to Reel viewers successfully");
+    successResponse(res, 200, "User reelded to Reel viewers successfully");
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
@@ -152,7 +185,7 @@ export const checkAuth = async (req, res) => {
       return errorResponse(res, 404, "Reel not found");
     }
     if (reel.viewersId.includes(currentUserId)) {
-      return successResponse(res, 200, "User already watched this Reel", {
+      return successResponse(res, 200, "User alrereely watched this Reel", {
         watched: true,
       });
     }

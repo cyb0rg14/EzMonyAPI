@@ -1,4 +1,6 @@
 import Ad from "../models/ad/Ad.js";
+import User from "../models/user/User.js";
+import { getMatchingScores } from "../utils/recalgo.js";
 import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllAds = async (req, res) => {
@@ -33,17 +35,30 @@ export const getAllAds = async (req, res) => {
   }
 };
 
-export const getAdsByCategories = async (req, res) => {
+export const getRecommendedAds = async (req, res) => {
   try {
-    const { pageSize = 4, categories } = req.query;
+    const userId = req.session.userId;
+    if (!userId) {
+      return errorResponse(
+        res,
+        401,
+        "User must be logged in to get recommended Ads!"
+      );
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      return errorResponse(res, 404, "User not found");
+    }
 
-    const ads = await Ad.find({ categories: { $in: categories } })
-      .populate({
-        path: "creator",
-        select: "fullname username",
-      })
-      .sort({ _id: -1 })
-      .limit(pageSize);
+    const ads = await Ad.find();
+    const adMatchingScores = await getMatchingScores(user, ads, "ad");
+    ads.sort((a, b) => {
+      const scoreA =
+        adMatchingScores.find((item) => item.adId.equals(a._id))?.score || 0;
+      const scoreB =
+        adMatchingScores.find((item) => item.adId.equals(b._id))?.score || 0;
+      return scoreB - scoreA;
+    });
 
     successResponse(res, 200, "Ads fetched successfully", { ads });
   } catch (error) {
