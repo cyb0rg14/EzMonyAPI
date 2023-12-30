@@ -5,7 +5,7 @@ import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllReels = async (req, res) => {
   try {
-    const { pageSize = 8, categories, subCategories } = req.query;
+    const { page = 1, pageSize = 8, categories, subCategories } = req.query;
     const query = {};
     if (categories) {
       if (!Array.isArray(categories)) {
@@ -27,16 +27,18 @@ export const getAllReels = async (req, res) => {
         select: "fullname username",
       })
       .sort({ _id: -1 })
+      .skip((page - 1) * pageSize)
       .limit(pageSize);
 
     successResponse(res, 200, "All reels fetched successfully", { reels });
   } catch (error) {
-    errorResponse(res, 500, error.message); 
+    errorResponse(res, 500, error.message);
   }
 };
 
 export const getRecommendedReels = async (req, res) => {
   try {
+    const { page = 1, pageSize = 8 } = req.query;
     const userId = req.session.userId;
     if (!userId) {
       return errorResponse(
@@ -54,17 +56,23 @@ export const getRecommendedReels = async (req, res) => {
     const reelMatchingScores = await getMatchingScores(user, reels, "reel");
     reels.sort((a, b) => {
       const scoreA =
-        reelMatchingScores.find((item) => item.reelId.equals(a._id))?.score || 0;
+        reelMatchingScores.find((item) => item.reelId.equals(a._id))?.score ||
+        0;
       const scoreB =
-        reelMatchingScores.find((item) => item.reelId.equals(b._id))?.score || 0;
+        reelMatchingScores.find((item) => item.reelId.equals(b._id))?.score ||
+        0;
       return scoreB - scoreA;
     });
+
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedAds = ads.slice(startIndex, endIndex);
 
     successResponse(res, 200, "Reels fetched successfully", { reels });
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
-}
+};
 
 export const getReelById = async (req, res) => {
   try {

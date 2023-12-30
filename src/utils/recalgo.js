@@ -1,4 +1,4 @@
-const calculateMatchingScore = async (user, ad) => {
+const calculateMatchingScore = (user, ad) => {
   try {
     let score = 0;
     const commonInterests = user.interests.filter((interest) =>
@@ -30,7 +30,7 @@ const calculateMatchingScore = async (user, ad) => {
 export const getMatchingScores = async (user, contents, contentType) => {
   const matchingScores = [];
   for (const content of contents) {
-    const matchingScore = await calculateMatchingScore(user, content);
+    const matchingScore = calculateMatchingScore(user, content);
     matchingScores.push({ [`${contentType}Id`]: content._id, score: matchingScore });
   }
   matchingScores.sort((a, b) => b.score - a.score);

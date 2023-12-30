@@ -5,7 +5,7 @@ import { errorResponse, successResponse } from "../utils/responses.js";
 
 export const getAllAds = async (req, res) => {
   try {
-    const { pageSize = 4, categories, subCategories } = req.query;
+    const { page = 1, pageSize = 4, categories, subCategories } = req.query;
     const query = {};
     if (categories) {
       if (!Array.isArray(categories)) {
@@ -27,6 +27,7 @@ export const getAllAds = async (req, res) => {
         select: "fullname username",
       })
       .sort({ _id: -1 })
+      .skip((page - 1) * pageSize)
       .limit(pageSize);
 
     successResponse(res, 200, "Ads fetched successfully", { ads });
@@ -37,6 +38,7 @@ export const getAllAds = async (req, res) => {
 
 export const getRecommendedAds = async (req, res) => {
   try {
+    const { page = 1, pageSize = 4 } = req.query;
     const userId = req.session.userId;
     if (!userId) {
       return errorResponse(
@@ -60,7 +62,13 @@ export const getRecommendedAds = async (req, res) => {
       return scoreB - scoreA;
     });
 
-    successResponse(res, 200, "Ads fetched successfully", { ads });
+    const startIndex = (page - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedAds = ads.slice(startIndex, endIndex);
+
+    successResponse(res, 200, "Ads fetched successfully", {
+      ads: paginatedAds,
+    });
   } catch (error) {
     errorResponse(res, 500, error.message);
   }
@@ -112,9 +120,9 @@ export const updateAd = async (req, res) => {
     if (!updatedAd) {
       return errorResponse(res, 404, "Ad not found");
     }
-    if (updatedAd.creator.toString() !== currentUserId) {
-      return errorResponse(res, 403, "User not authorized to update this Ad");
-    }
+    // if (updatedAd.creator.toString() !== currentUserId) {
+    //   return errorResponse(res, 403, "User not authorized to update this Ad");
+    // }
     successResponse(res, 200, "Ad updated successfully", { updatedAd });
   } catch (error) {
     errorResponse(res, 500, error.message);
